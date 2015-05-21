@@ -145,4 +145,25 @@ public class RetryWithHttpsEntryPointTests extends TestCase {
 				"https://www.example.com:9999/bigWebApp/hello/pathInfo.html?open=true",
 				response.getRedirectedUrl());
 	}
+
+	public void testOperationRedirectRequestFromNotMappedPort() throws Exception {
+
+		// given
+		MockHttpServletRequest request = new MockHttpServletRequest("GET",
+				"/appPath/context/page.html");
+		request.setQueryString("open=true");
+		request.setScheme("https");
+		request.setServerName("www.example.com");
+		request.setServerPort(7080);
+
+		MockHttpServletResponse response = new MockHttpServletResponse();
+
+		RetryWithHttpsEntryPoint entryPoint = new RetryWithHttpsEntryPoint();
+
+		// when
+		entryPoint.commence(request, response);
+
+		// then
+		assertEquals("/appPath/context/page.html?open=true", response.getRedirectedUrl());
+	}
 }
